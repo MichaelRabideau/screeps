@@ -25,7 +25,7 @@ var room1 = {
       orderArray.upgrader = new spawn.createOrder({role: "upgrader"}, 
         1, myRoom, [WORK,CARRY,MOVE]);
       orderArray.builder = new spawn.createOrder({role: "builder"}, 
-        3, myRoom, [WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE]);
+        0, myRoom, [WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE]);
       orderArray.repair = new spawn.createOrder({role: "repair"}, 
         1, myRoom, [WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE]);
       orderArray.hunterKiller = new spawn.createOrder({role: "hunterKiller", staticCreep: true}, 
@@ -35,7 +35,7 @@ var room1 = {
       orderArray.repairStructures = new spawn.createOrder({role: "repairStructures"}, 
         1, myRoom, [WORK,CARRY,MOVE,MOVE]);
       orderArray.runner = new spawn.createOrder({role: "runner"}, 
-        2, myRoom, [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY]);
+        1, myRoom, [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY]);
       orderArray.specialHarvester = new spawn.createOrder({role: "specialHarvester", mySource: "577b94770f9d51615fa499dc"}, 
         1, myRoom, [WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,MOVE]);
       orderArray.reloader = new spawn.createOrder({role: "reloader"}, 
