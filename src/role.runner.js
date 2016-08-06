@@ -55,14 +55,17 @@ var roleRunner = {
             else
             {
               //gather from greatest container
-              if(creep.memory.closestEnergyContainer)
-                utils.collectFromTarget(creep, creep.memory.closestEnergyContainer)
+              if(creep.memory.greatestEnergyContainer)
+                utils.collectFromTarget(creep, Game.getObjectById(creep.memory.closestEnergyContainer))
               else
               {
                 var containers = utils.getContainers(creep);
                 var chosenTarget = greatest(containers);
                 if(chosenTarget)
+                {
+                  creep.memory.greatestEnergyContainer = chosenTarget.id;
                   utils.collectFromTarget(creep, chosenTarget);
+                }
               }
             }
         }
@@ -78,9 +81,11 @@ var roleRunner = {
               if(!creep.memory.fillTarget)
               {
                 targets = utils.findStructures(creep, [STRUCTURE_CONTAINER, STRUCTURE_STORAGE], 
-                  function(str){return _.sum(str.store) < str.storeCapacity;});
+                  function(str){return (_.sum(str.store) < str.storeCapacity) && str.id != 
+                  creep.memory.greatestEnergyContainer;});
                 if( targets.length > 0)
                 {
+                  creep.memory.greatestEnergyContainer = null;
                   var chosenTarget = lowest(targets);
                   creep.memory.fillTarget = chosenTarget.id;
                   if(creep.transfer(chosenTarget, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
