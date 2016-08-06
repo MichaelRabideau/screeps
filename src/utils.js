@@ -223,5 +223,6 @@ module.exports = {
     findStructures: findStructuresExport,
     splitList: splitListExport,
     roomHostiles: roomHostilesExport,
-    extendClasses: extendClassesExport
+    extendClasses: extendClassesExport,
+    getEffectiveEnergy: getEffectiveEnergy
 };
