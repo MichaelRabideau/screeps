@@ -56,7 +56,7 @@ var roleRunner = {
             {
               //gather from greatest container
               if(creep.memory.greatestEnergyContainer)
-                utils.collectFromTarget(creep, Game.getObjectById(creep.memory.closestEnergyContainer))
+                utils.collectFromTarget(creep, Game.getObjectById(creep.memory.greatestEnergyContainer))
               else
               {
                 var containers = utils.getContainers(creep);
