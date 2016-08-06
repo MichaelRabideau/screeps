@@ -219,7 +219,7 @@ var cleanSource = function(creep)
     funcs['reloader'] = roleReloader.run;
     funcs['runner'] = roleRunner.run;
     funcs['repairRoad'] = roleRepairRoad.run;
-    funcs['builder'] roleBuilder.run;
+    funcs['builder'] = roleBuilder.run;
     funcs['repairStructures'] = roleRepairStructures.run;
     funcs['repair'] = roleRepair.run;
     funcs['hunterKiller'] = roleHunterKiller.run;
