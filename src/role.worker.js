@@ -6,7 +6,6 @@ var roleWorker = {
     run: function(creep) {
 
         if(creep.memory.building && creep.carry.energy == 0) {
-            creep.memory.workTarget = null;
             creep.memory.building = false;
         }
         if(!creep.memory.building && creep.carry.energy == creep.carryCapacity) {

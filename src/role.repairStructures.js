@@ -30,7 +30,10 @@ var roleRepairRoad = {
     run: function(creep) {
         var workNow = roleWorker.run(creep);
         if(!workNow)
+        {
+          creep.memory.repairTarget = null;
           return;
+        }
         
         var targo = Game.getObjectById(creep.memory.repairTarget);
         if( targo && targo.hits == targo.hitsMax)

@@ -16,7 +16,10 @@ var roleBuilder = {
     run: function(creep) {
         var workNow = roleWorker.run(creep);
         if(!workNow)
+        {
+          creep.memory.workTarget = null;
           return;
+        }
         
         if(creep.memory.workTarget)
         {
