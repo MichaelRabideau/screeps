@@ -21,7 +21,7 @@ var room1 = {
     {
       var orderArray = new Object();
       orderArray.harvester = new spawn.createOrder({role: "harvester", mySource: "577b94770f9d51615fa499de"}, 
-        3, myRoom, [WORK,WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE]);
+        2, myRoom, [WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE]);
       orderArray.upgrader = new spawn.createOrder({role: "upgrader"}, 
         1, myRoom, [WORK,CARRY,MOVE]);
       orderArray.builder = new spawn.createOrder({role: "builder"}, 
