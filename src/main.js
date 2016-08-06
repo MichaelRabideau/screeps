@@ -3,11 +3,12 @@ var utils = require('utils');
 var roleTower = require('role.tower');
 var room1Spawn = require('room1Spawn');
 var room2Spawn = require('room2Spawn');
+var actFuncs1 = require('actFuncs');
 
 module.exports.loop = function () {
     
     utils.extendClasses();
-    var actFuncs = utils.buildActFuncs();
+    var actFuncs = actFuncs1.buildActFuncs();
     
     // Always place this memory cleaning code at the very top of your main loop!
 
