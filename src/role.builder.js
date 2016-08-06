@@ -1,7 +1,7 @@
 var utils = require('utils');
 var roleWorker = require('role.worker');
 
-var buildTarg = function(targ)
+var buildTarg = function(creep, targ)
 {
     var result = creep.build(targ);
     if(result == ERR_NOT_IN_RANGE)
@@ -20,7 +20,7 @@ var roleBuilder = {
         
         if(creep.memory.workTarget)
         {
-          buildTarg(Game.getObjectById(creep.memory.workTarget));
+          buildTarg(creep, Game.getObjectById(creep.memory.workTarget));
         }
         else
         {
@@ -28,11 +28,11 @@ var roleBuilder = {
           var priorityTargets = _.filter(targets, (site) => site.structureType == STRUCTURE_ROAD);
           if(priorityTargets.length){
               creep.memory.workTarget = priorityTargets[0].id;
-              buildTarg(priorityTargets[0]);
+              buildTarg(creep, priorityTargets[0]);
           }
           else if(targets.length) {
               creep.memory.workTarget = targets[0].id;
-              buildTarg(targets[0]);
+              buildTarg(creep, targets[0]);
           }
           else
           {
