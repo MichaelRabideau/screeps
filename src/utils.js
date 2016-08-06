@@ -15,6 +15,10 @@ var cleanSource = function(creep)
     var response = creep.withdraw(src, RESOURCE_ENERGY);
     if(response == ERR_NOT_IN_RANGE) 
       creep.moveEfficiently(src);
+    else if(response == OK)
+      creep.memory.closestEnergyContainer = null;
+    else if(response == ERR_NOT_ENOUGH_RESOURCES)
+      creep.memory.closestEnergyContainer = null;
   }
   
   var getEffectiveEnergy = function(structo)
@@ -197,14 +201,20 @@ var cleanSource = function(creep)
 module.exports = {
 
     collectFromStructures: function(creep) {
-        var possibleTargets = getPossibleTargets(creep);
-        if(possibleTargets.length)
-        {
-          var chosenTarget = creep.pos.findClosestByRange(possibleTargets);
-          collect(creep, chosenTarget);	
-        }
+        if(creep.memory.closestEnergyContainer)
+          collect(creep, Game.getObjecetById(creep.memory.closestEnergyContainer))
         else
-          creep.moveEfficiently(creep.room.controller);
+        {
+          var possibleTargets = getPossibleTargets(creep);
+          if(possibleTargets.length)
+          {
+            var chosenTarget = creep.pos.findClosestByRange(possibleTargets);
+            creep.memory.closestEnergyContainer = chosenTarget.id;
+            collect(creep, chosenTarget);	
+          }
+          else
+            creep.moveEfficiently(creep.room.controller);
+        }
     },
     getContainers: getPossibleTargets,
     collectFromTarget: collect,

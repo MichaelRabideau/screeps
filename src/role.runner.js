@@ -55,10 +55,15 @@ var roleRunner = {
             else
             {
               //gather from greatest container
-              var containers = utils.getContainers(creep);
-              var chosenTarget = greatest(containers);
-              if( chosenTarget)
-                utils.collectFromTarget(creep, chosenTarget);
+              if(creep.memory.closestEnergyContainer)
+                utils.collectFromTarget(creep, creep.memory.closestEnergyContainer)
+              else
+              {
+                var containers = utils.getContainers(creep);
+                var chosenTarget = greatest(containers);
+                if(chosenTarget)
+                  utils.collectFromTarget(creep, chosenTarget);
+              }
             }
         }
         else {
