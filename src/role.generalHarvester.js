@@ -38,6 +38,7 @@ var roleHarvester = {
         }
         
         if(!creep.memory.delivering) {
+          creep.memory.workTarget = null;
           if(creep.memory.mySource)
           {
             harvest(creep, Game.getObjectById(creep.memory.mySource));
@@ -66,20 +67,35 @@ var roleHarvester = {
                   creep.moveEfficiently(link);
             return;
           }*/
-         targets = utils.findStructures(creep, [STRUCTURE_CONTAINER], 
-          function(str){return str.store[RESOURCE_ENERGY] < str.storeCapacity;});
-            if( targets.length > 0)
+          if(creep.memory.workTarget)
+          {
+            var chosenTarget = Game.getObjectbyId(creep.memory.workTarget);
+            var result = creep.transfer(chosenTarget, RESOURCE_ENERGY);
+            if(result == ERR_NOT_IN_RANGE) {
+                creep.moveEfficiently(chosenTarget);
+            } 
+            else if(result == ERR_FULL || result == OK)
             {
-              var chosenTarget = creep.pos.findClosestByRange(targets)
-                //var chosenTarget = targets[0];
-              if(creep.transfer(chosenTarget, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                  creep.moveEfficiently(chosenTarget);
-              } 
+              creep.memory.workTarget = null;
             }
-            else
-            {
-              //??? 
-              //profit
+          }
+          else
+          {
+             targets = utils.findStructures(creep, [STRUCTURE_CONTAINER, STRUCTURE_STORAGE], 
+              function(str){return str.store[RESOURCE_ENERGY] < str.storeCapacity;});
+                if( targets.length > 0)
+                {
+                  var chosenTarget = creep.pos.findClosestByRange(targets)
+                  creep.memory.workTarget = chosenTarget.id;
+                  if(creep.transfer(chosenTarget, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                      creep.moveEfficiently(chosenTarget);
+                  } 
+                }
+                else
+                {
+                  //??? 
+                  //profit
+                }
             }
         }
     }
