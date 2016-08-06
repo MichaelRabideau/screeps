@@ -1,244 +1,217 @@
-var utils = require('utils');
+var roleHarvester = require('role.harvester');
 
-var createOrderExport = function(initMemory, orderCount, room, bodyParts)
-{
-  this.initMemory = initMemory;
-  this.count = orderCount;
-  this.room = room;
-  this.bodyParts = bodyParts;
-}
-
-var create = function(listo, count, arr, typeo, spawners)
-{
-    //console.log(typeo + ": " + listo.length + " < " + count);
-    if(listo.length < count) {
-      //console.log("true");
-        var spawnResult = Game.spawns.spawn1.canCreateCreep(arr);
-        if(spawnResult == OK)
-        {
-            var newName = Game.spawns.spawn1.createCreep(arr, undefined, {role: typeo});
-            console.log('Spawning new ' + typeo + ": " + newName);
-            //return Memory.spawnFlag;
-            return true;
-        }
-        else
-        {
-            if(spawnResult==ERR_NOT_ENOUGH_ENERGY)
-                return true;
-            else
-            {
-                console.log("Can't spawn: " + spawnResult);
-                //return Memory.spawnFlag;
-                return true;
-            }
-        }
+var cleanSource = function(creep)
+	{
+    if(creep.memory.energyTarget)
+    {
+      Memory.energyTargets[creep.memory.energyTarget] -= creep.carryCapacity;
+      creep.memory.energyTarget = null;
     }
-    return false;
-}
-
-var fillOrder = function(order, room, creepList)
-{
-  //Call create. return false if no spawn is needed
-  var spawners = room.find(FIND_MY_SPAWNS);
-  var desired = order.count;
-  var actual = creepList.length;
-  var spawned = false;
-  var spawnResult;
-  if(actual >= desired)
-    return false;
-  for(spawn in spawners)
+	}
+	
+  var collect = function(creep, src)
   {
-    if(!spawned)
-    {
-      spawnResult = spawners[spawn].canCreateCreep(order.bodyParts);
-      if(spawnResult == OK)
-      {
-        var newName = spawners[spawn].createCreep(order.bodyParts, undefined, order.initMemory);
-        console.log('Spawning new ' + order.initMemory.role + ": " + newName);
-        spawned = true;
-      }
-    }
-    else
-    {
-      spawnResult = spawners[spawn].canCreateCreep([WORK,CARRY,MOVE]);
-      if(spawnResult == OK)
-        return false;
-    }
+    //var response = src.transfer(creep, RESOURCE_ENERGY);
+    var response = creep.withdraw(src, RESOURCE_ENERGY);
+    if(response == ERR_NOT_IN_RANGE) 
+      creep.moveEfficiently(src);
   }
-  return true;
-}
-
-var spawnRoomCreeps = function(roomOrders, staticCreeps)
-{
-  //param: roomOrders: orders for one entire room
-  //We're not looping through rooms here. Only want to deal with one specific room. But
-  //it must be set in the loop.
-  var room; 
-  var roomCreeps;
-  var roomObj;
-  for( var order in roomOrders)
-  {
-    if(!room)                         //Set the room and have it persist through each iteration)
-    {
-      room = roomOrders[order].room;
-      roomObj = Game.rooms[room];
-      roomCreeps = roomObj.find(FIND_MY_CREEPS);
-      if(roomCreeps.length == 0)  //If all the creeps are dead, spawn a simple harvester and return
-      {
-        fillOrder( createOrderExport({role: "harvester"}, 1, room, [WORK,CARRY,MOVE]), roomObj,[]);
-        return true;
-      }
-      roomCreeps.concat(staticCreeps);  //Concatenate the "static" creeps - creeps that can move to different rooms.
-    }
-    creepResult = utils.splitList(roomCreeps, function(creep){return creep.memory.role == 
-      roomOrders[order].initMemory.role;});
-    if( fillOrder(roomOrders[order], roomObj, creepResult[0]) )
-      return true;
-    roomCreeps = creepResult[1];
-  }
-  return false;
-}
-
-var spawnCode = {
-  run: function()
-  {
-    var staticCreeps = _(Game.creeps).filter(function(creep){return Boolean(creep.Memory.staticCreep);});
-     for(var room in Memory.spawnOrders)
-     {
-      var curRoom = Memory.spawnOrders[room];
-      spawnRoomCreeps(curRoom, staticCreeps);
-     }
-  },
-  createOrder: createOrderExport
-};
-
-module.exports = spawnCode;
-var utils = require('utils');
-
-var createOrderExport = function(initMemory, orderCount, room, bodyParts)
-{
-  this.initMemory = initMemory;
-  this.count = orderCount;
-  this.room = room;
-  this.bodyParts = bodyParts;
-}
-
-var create = function(listo, count, arr, typeo, spawners)
-{
-    //console.log(typeo + ": " + listo.length + " < " + count);
-    if(listo.length < count) {
-      //console.log("true");
-        var spawnResult = Game.spawns.spawn1.canCreateCreep(arr);
-        if(spawnResult == OK)
-        {
-            var newName = Game.spawns.spawn1.createCreep(arr, undefined, {role: typeo});
-            console.log('Spawning new ' + typeo + ": " + newName);
-            //return Memory.spawnFlag;
-            return true;
-        }
-        else
-        {
-            if(spawnResult==ERR_NOT_ENOUGH_ENERGY)
-                return true;
-            else
-            {
-                console.log("Can't spawn: " + spawnResult);
-                //return Memory.spawnFlag;
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
-var fillOrder = function(order, room, creepList)
-{
-  //Call create. return false if no spawn is needed
-  var spawners = room.find(FIND_MY_SPAWNS);
-  var desired = order.count;
-  var actual = creepList.length;
-  var spawned = false;
-  var spawnResult;
-  if(actual >= desired)
-    return false;
-  for(spawn in spawners)
-  {
-    if(!spawned)
-    {
-      spawnResult = spawners[spawn].canCreateCreep(order.bodyParts);
-      if(spawnResult == OK)
-      {
-        var newName = spawners[spawn].createCreep(order.bodyParts, undefined, order.initMemory);
-        console.log('Spawning new ' + order.initMemory.role + ": " + newName);
-        spawned = true;
-      }
-    }
-    else
-    {
-      spawnResult = spawners[spawn].canCreateCreep([WORK,CARRY,MOVE]);
-      if(spawnResult == OK)
-        return false;
-    }
-  }
-  return true;
-}
-
-var spawnRoomCreeps = function(roomOrders, staticCreeps)
-{
-  //param: roomOrders: orders for one entire room
-  //We're not looping through rooms here. Only want to deal with one specific room. But
-  //it must be set in the loop.
-  var room; 
-  var roomCreeps;
-  var roomObj;
   
-  for( var order in roomOrders)
+  var getEffectiveEnergy = function(structo)
   {
-    if(!room)                         //Set the room and have it persist through each iteration)
-    {
-      room = roomOrders[order].room;
-      roomObj = Game.rooms[room];
-      roomCreeps = roomObj.find(FIND_MY_CREEPS, {
-        filter: function(crp) { return !crp.memory.staticCreep; } });
-      if(roomCreeps.length == 0)  //If all the creeps are dead, spawn a simple harvester and return
-      {
-        fillOrder( createOrderExport({role: "harvester"}, 1, room, [WORK,CARRY,MOVE]), roomObj,[]);
-        return true;
-      }
-      roomCreeps = roomCreeps.concat(staticCreeps);  //Concatenate the "static" creeps - creeps that can move to different rooms.
-    }
-    creepResult = utils.splitList(roomCreeps, function(creep){return creep.memory.role == 
-      roomOrders[order].initMemory.role;});
-    if( fillOrder(roomOrders[order], roomObj, creepResult[0]) )
-      return true;
-    roomCreeps = creepResult[1];
-  }
-  return false;
-}
-
-var spawnCode = {
-  run: function()
-  {
-    //var staticCreeps = _(Game.creeps).filter(function(creep){return Boolean(creep.memory.staticCreep);});
-    
-    if(!Memory.needSpawns)
-      return;
-    Memory.needSpawns = false;
-    var staticCreeps = [];
+    //var energy = structo.energy - Memory.energyTargets[structo.id];
+    //console.log( structo.energy + " - " + Memory.energyTargets[structo.id] );
     //IMPROVE
-    for(var crp in Game.creeps)
+    var energy;
+    if( structo.structureType == STRUCTURE_CONTAINER || structo.structureType == STRUCTURE_STORAGE)
+      energy = structo.store[RESOURCE_ENERGY];
+    else if( structo.structureType == STRUCTURE_LINK)
+      energy = structo.energy;
+    return energy;
+  }
+  
+  var getPossibleTargets = function(creep)
+  {
+    var possibles = findStructuresExport(creep, [STRUCTURE_CONTAINER, STRUCTURE_LINK, STRUCTURE_STORAGE], 
+      function(structo){return getEffectiveEnergy(structo) >= creep.carryCapacity;});
+    return possibles;
+  }
+  
+  var weakestExport = function(structures)
+  {
+    var curWeakest = null;
+    for(var st in structures)
     {
-      if(Game.creeps[crp].memory.staticCreep)
-        staticCreeps.push(Game.creeps[crp]);
+      if(curWeakest == null)
+        curWeakest = structures[st];
+      else
+        {
+          if(curWeakest.hits/curWeakest.hitsMax > structures[st].hits / structures[st].hitsMax)
+            curWeakest = structures[st];
+        }
     }
-    //console.log(staticCreeps);
-     for(var room in Memory.spawnOrders)
-     {
-      var curRoom = Memory.spawnOrders[room];
-      Memory.needSpawns = Memory.needSpawns || spawnRoomCreeps(curRoom, staticCreeps);
-     }
-  },
-  createOrder: createOrderExport
-};
+    return curWeakest;
+  }
 
-module.exports = spawnCode;
+  var followPathExport = function(creep, path)
+  {
+	  for( var i in path )
+	  {
+		 if(creep.room.name == path[i])
+		 {
+			if(path[Number(i)+1])
+			{
+				creep.moveEfficiently(creep.pos.findClosestByRange(creep.room.findExitTo(path[Number(i)+1])));
+				return false;
+			}
+			else
+				return true;
+		 }
+	 }
+	 creep.moveEfficiently(creep.pos.findClosestByRange(creep.room.findExitTo(path[0])));
+	 return false;
+  }
+  
+  var findStructuresExport = function(creep, types, func)
+  {
+      //IMPROVE
+    if(!func)
+    {
+      func = function(anything)
+      {
+        return true;
+      };
+    }
+    var targets = creep.room.find(FIND_STRUCTURES, {
+      filter: (structure) => {
+        for(var type in types)
+        {
+          if(structure.structureType == types[type])
+          {
+            return func(structure);
+          }
+        }
+        return false;
+      }
+    });
+    return targets;
+  }
+  
+  var splitListExport = function(list, func)
+  {
+    var list1 = [];
+    var list2 = [];
+    for(var index in list)
+    {
+      if(func(list[index]))
+        list1.push(list[index]);
+      else
+        list2.push(list[index]);
+    }
+    return [list1, list2];
+  }
+  
+  var roomHostilesExport = function(room)
+  {
+    var initialHostiles = room.find(FIND_HOSTILE_CREEPS);
+    var finalHostiles = [];
+    var friend;
+    
+    for(var crp in initialHostiles)
+    {
+      friend = false;
+      for(var ally in Memory.allies)
+      {
+        if(initialHostiles[crp].owner.username == Memory.allies[ally])
+        friend = true;
+        break;
+      }
+      if(!friend)
+        finalHostiles.push(initialHostiles[crp]);
+    }
+    return finalHostiles;
+  }
+  
+  
+  var moveEfficiently = function(target)
+  {
+    var walkPath = function(creep)
+    {
+      var moveDest = creep.memory.moveDest;
+      var nextSpot = moveDest.path[moveDest.index];
+      if(!nextSpot)
+      {
+        creep.memory.moveDest.path = creep.pos.findPathTo(moveDest.x, moveDest.y);
+        creep.memory.moveDest.index = 0;
+        /*nextSpot = moveDest.path[moveDest.index];
+        return;*/
+      }
+      /*var obstacles = creep.room.getPositionAt(nextSpot.x, nextSpot.y).lookFor(LOOK_CREEPS);
+      if(obstacles.length)
+      {
+        creep.memory.moveDest.path = creep.pos.findPathTo(moveDest.x, moveDest.y);
+        creep.memory.moveDest.index = 0;  
+      }*/
+      if(creep.memory.moveDest.last && creep.memory.moveDest.last.x == creep.pos.x && creep.memory.moveDest.last.y == creep.pos.y)
+      {
+        creep.memory.moveDest.path = creep.pos.findPathTo(creep.memory.moveDest.x, creep.memory.moveDest.y);
+        creep.memory.moveDest.index = 0;
+      }
+      else
+      {
+        creep.memory.moveDest.last = {x: creep.pos.x, y: creep.pos.y};
+        /*creep.memory.moveDest.last.x = creep.pos.x;
+        creep.memory.moveDest.last.y = creep.pos.y;*/
+      }
+      //creep.say(creep.memory.moveDest.index);
+      creep.move(creep.memory.moveDest.path[creep.memory.moveDest.index].direction);
+      creep.memory.moveDest.index ++;
+    }
+
+    if(this.memory.moveDest && this.memory.moveDest.x == target.pos.x && this.memory.moveDest.y == target.pos.y)
+    {
+      //I have the path. Keep moving that way. check for collisions though.
+      walkPath(this);
+    }
+    else
+    {
+      //Create a path and walk it.
+      this.memory.moveDest = new Object();
+      this.memory.moveDest.path = this.pos.findPathTo(target, {ignoreCreeps: true});
+      this.memory.moveDest.x = target.pos.x;
+      this.memory.moveDest.y = target.pos.y;
+      this.memory.moveDest.index = 0;
+      walkPath(this);
+    }
+  }
+  
+  var extendClassesExport = function()
+  {
+    Creep.prototype.moveEfficiently = moveEfficiently;
+    //RoomPosition.prototype.pos = function(){return this;};
+    /*StructureStorage.prototype.energy = function(){return this.store[RESOURCE_ENERGY];};
+    StructureStorage.prototype.energyCapacity = function(){return this.storeCapacity;};*/
+  }
+  
+
+module.exports = {
+
+    collectFromStructures: function(creep) {
+        var possibleTargets = getPossibleTargets(creep);
+        if(possibleTargets.length)
+        {
+          var chosenTarget = creep.pos.findClosestByRange(possibleTargets);
+          collect(creep, chosenTarget);	
+        }
+        else
+          creep.moveEfficiently(creep.room.controller);
+    },
+    getContainers: getPossibleTargets,
+    collectFromTarget: collect,
+    weakest: weakestExport,
+    followPath: followPathExport,
+    findStructures: findStructuresExport,
+    splitList: splitListExport,
+    roomHostiles: roomHostilesExport,
+    extendClasses: extendClassesExport
+};
