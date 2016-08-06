@@ -69,7 +69,7 @@ var roleHarvester = {
           }*/
           if(creep.memory.workTarget)
           {
-            var chosenTarget = Game.getObjectbyId(creep.memory.workTarget);
+            var chosenTarget = Game.getObjectById(creep.memory.workTarget);
             var result = creep.transfer(chosenTarget, RESOURCE_ENERGY);
             if(result == ERR_NOT_IN_RANGE) {
                 creep.moveEfficiently(chosenTarget);
