@@ -202,7 +202,7 @@ module.exports = {
 
     collectFromStructures: function(creep) {
         if(creep.memory.closestEnergyContainer)
-          collect(creep, Game.getObjecetById(creep.memory.closestEnergyContainer))
+          collect(creep, Game.getObjectById(creep.memory.closestEnergyContainer))
         else
         {
           var possibleTargets = getPossibleTargets(creep);
