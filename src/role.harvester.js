@@ -21,7 +21,8 @@ var roleHarvester = {
             {
               var sources = creep.room.find(FIND_SOURCES);
               //someSource = sources[1];
-			  someSource = creep.pos.findClosestByRange(sources);
+              someSource = creep.pos.findClosestByRange(sources);
+              creep.memory.mySource = someSource.id;
             }
             if(creep.harvest(someSource) == ERR_NOT_IN_RANGE) {
                 creep.moveEfficiently(someSource);
@@ -45,20 +46,36 @@ var roleHarvester = {
             }
             else
             {
-             targets = creep.room.find(FIND_STRUCTURES, {
-                    filter: (structure) => {
-                    return (structure.structureType == STRUCTURE_CONTAINER &&
-                    structure.store[RESOURCE_ENERGY] < structure.storeCapacity);}});
-              if( targets.length > 0)
+              if(creep.memory.workTarget)
               {
-                var chosenTarget = creep.pos.findClosestByRange(targets)
-                  //var chosenTarget = targets[0];
-                if(creep.transfer(chosenTarget, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                var chosenTarget = Game.getObjectById(creep.memory.workTarget);
+                var result = creep.transfer(chosenTarget, RESOURCE_ENERGY);
+                if(result == ERR_NOT_IN_RANGE) {
                     creep.moveEfficiently(chosenTarget);
                 } 
+                else if(result == ERR_FULL || result == OK)
+                {
+                  creep.memory.workTarget = null;
+                }
               }
               else
-                creep.moveEfficiently(Game.flags['HarvesterRally']);
+              {
+               targets = creep.room.find(FIND_STRUCTURES, {
+                      filter: (structure) => {
+                      return (structure.structureType == STRUCTURE_CONTAINER &&
+                      structure.store[RESOURCE_ENERGY] < structure.storeCapacity);}});
+                if( targets.length > 0)
+                {
+                  var chosenTarget = creep.pos.findClosestByRange(targets)
+                  creep.memory.workTarget = chosenTarget.id;
+                    //var chosenTarget = targets[0];
+                  if(creep.transfer(chosenTarget, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                      creep.moveEfficiently(chosenTarget);
+                  } 
+                }
+                else
+                  creep.moveEfficiently(Game.flags['HarvesterRally']);
+              }
             }
         }
     }
