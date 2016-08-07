@@ -15,7 +15,7 @@ var room2 = {
       orderArray.harvester = new spawn.createOrder({role: "harvester", mySource: "577b94880f9d51615fa49b21"}, 
         0, myRoom, [WORK,WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE]);
       orderArray.generalHarvester = new spawn.createOrder({role: "generalHarvester"}, 
-        4, myRoom, [WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE]);
+        4, myRoom, [WORK,WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE]);
       orderArray.upgrader = new spawn.createOrder({role: "upgrader"}, 
         1, myRoom, [WORK,CARRY,MOVE]);
       orderArray.runner = new spawn.createOrder({role: "runner"}, 
