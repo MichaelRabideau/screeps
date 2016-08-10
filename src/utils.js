@@ -168,6 +168,12 @@ var cleanSource = function(creep)
         creep.memory.moveDest.last.y = creep.pos.y;*/
       }
       //creep.say(creep.memory.moveDest.index);
+      if(!creep.memory.moveDest.path[moveDest.index])
+      {
+        //Desperately trying to fix bug
+        creep.memory.moveDest = null;
+        return;
+      }   
       creep.move(creep.memory.moveDest.path[creep.memory.moveDest.index].direction);
       creep.memory.moveDest.index ++;
     }
