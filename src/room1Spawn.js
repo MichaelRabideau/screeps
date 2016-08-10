@@ -35,7 +35,7 @@ var room1 = {
       orderArray.repairStructures = new spawn.createOrder({role: "repairStructures"}, 
         1, myRoom, [WORK,CARRY,MOVE,MOVE]);
       orderArray.runner = new spawn.createOrder({role: "runner"}, 
-        1, myRoom, [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY]);
+        2, myRoom, [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY]);
       orderArray.specialHarvester = new spawn.createOrder({role: "specialHarvester", mySource: "577b94770f9d51615fa499dc"}, 
         1, myRoom, [WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,MOVE]);
       orderArray.reloader = new spawn.createOrder({role: "reloader"}, 

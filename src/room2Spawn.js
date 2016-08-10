@@ -19,7 +19,7 @@ var room2 = {
       orderArray.upgrader = new spawn.createOrder({role: "upgrader"}, 
         1, myRoom, [WORK,CARRY,MOVE]);
       orderArray.runner = new spawn.createOrder({role: "runner"}, 
-        1, myRoom, [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY]);
+        2, myRoom, [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY]);
       orderArray.builder = new spawn.createOrder({role: "builder"}, 
         1, myRoom, [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY]);
       orderArray.repair = new spawn.createOrder({role: "repair"}, 
